@@ -4,6 +4,7 @@
 Created on Sun Dec 23 11:27:37 2018
 
 @author: Zeeshan Ali Sayyed
+TEST: To see whether Pycharm syncs correctly.
 """
 import argparse
 from scripts.feature_extractor import extract_features
@@ -14,6 +15,8 @@ feature_codes_1 = ['minus5', 'minus4', 'minus3', 'minus2', 'minus1', 'focus',
                    'plus1', 'plus2', 'plus3', 'plus4', 'plus5', 'next2letters',
                    'prev2letters', 'prev_word_suffix', 'following_word_prefix',
                    'focus_word_prefix', 'focus_word_suffix']
+
+
 
 
 def segment(infile, outfile):
@@ -32,11 +35,9 @@ def segment(infile, outfile):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Arabic Segmenter")
-    parser.add_argument('in_file', metavar='I', help="Path to the input file which \
-    needs to be segmented")
-    parser.add_argument("-o", "--out-file",
-                        help="Path of the out_file. If it is not provideed, it will be stored in the same directory as the inpput file.")
+    parser = argparse.ArgumentParser(description="Arabic Segmenter and Orthography Standardizer")
+    parser.add_argument('in_file', metavar='I', help="Path to the input file which needs to be segmented")
+    parser.add_argument("-o", "--out-file", help="Path of the out_file. If it is not provideed, it will be stored in the same directory as the input file.")
     parser.add_argument("-v", "-verbose", action="store_true")
     args = parser.parse_args()
 
