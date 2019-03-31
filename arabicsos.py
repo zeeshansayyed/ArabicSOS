@@ -8,14 +8,37 @@ Created on Wed March 23 11:27:37 2019
 """
 
 import argparse
+import pickle
+import os
+from scripts.trainer import SegmenterDataset, StandardizerDataset, CatboostModel, LightGBMModel
+
+MODELS = "models/"
 
 def train(options):
-    print("Called Train")
-    print(options)
+    if options.type == 'segmenter':
+        dataset = SegmenterDataset(options.template, options.train, options.dev, options.test, options.name)
+        model_type = 'binary'
+    elif options.type == 'standardizer':
+        dataset = StandardizerDataset(options.template, options.train, options.dev, options.test, options.name)
+        model_type = 'multiclass'
+    else:
+        print("{} is not supported".format(options.type))
+
+    if options.algorithm == 'catboost':
+        model = CatboostModel(model_type, options.template, options.algorithm_config)
+    elif options.algorithm == 'lightgbm':
+        model = LightGBMModel(model_type, options.template, options.algorithm_config)
+    else:
+        print("{} is not supported".format(options.algorithm))
+
+    print("Training Model")
+    model.train(dataset)
+    pickle.dump(model, open(os.path.join(MODELS, options.name + '.mod'), 'wb'))
+
 
 def segment(options):
     print("Called Segment")
-    print(options)
+    model = pickle.load(open(os.path.join(MODELS, options.model), 'rb'))
 
 def standardize(options):
     print("Called standardize")
@@ -33,19 +56,22 @@ def main():
     # Subparser for train command
     train_parser = subparsers.add_parser('train', help="Train your custom model for a segmenter or a standardizer")
     train_parser.add_argument('type', choices=['segmenter', 'standardizer'], help="What do you want to train? (segmenter/standardizer)")
+    train_parser.add_argument('-a', '--algorithm', choices=['catboost', 'lightgbm'], help="Name of the algorithm")
+    train_parser.add_argument('-c', '--algorithm-config', default='default', help="Configuration for the training algorithm from config.py")
     train_parser.add_argument('-t', '--train', required=True, help='train location')
     train_parser.add_argument('-d', '--dev', required=True, help='dev location')
-    train_parser.add_argument('-s', '--test', help='test location')
-    train_parser.add_argument('-l', '--model', type=argparse.FileType('w'), help='Name of the output model file')
+    train_parser.add_argument('-s', '--test', default=None, help='test location')
+    train_parser.add_argument('-n', '--name', help='Name of the resultant model. It will be saved in /models.')
+    train_parser.add_argument('-p', '--template', default='t1', help="Feature template to use")
     train_parser.set_defaults(func=train)
 
     # Subparser for segment command
     segment_parser = subparsers.add_parser('segment', help="Run the segmenter")
     # segment_parser.add_argument('--standardize', help="Pass the model that will be used to standardize the text before segmenting. If no model is passed, the default standardizer model will be used")
-    segment_parser.add_argument('-i', '--input', type=argparse.FileType('r'), help="Input file")
-    segment_parser.add_argument('-o', '--output', type=argparse.FileType('w'), help="Output file. If absent, .seg extension will be used")
+    segment_parser.add_argument('-i', '--input', help="Input file")
+    segment_parser.add_argument('-o', '--output', help="Output file. If absent, .seg extension will be used")
     segment_parser.add_argument('-s', '--standardize', action='store_true', help="Standardize the file before segmenting")
-    segment_parser.add_argument('-m', '--mode', choices=['interactive', 'batch', 'web'])
+    segment_parser.add_argument('-m', '--mode', choices=['interactive', 'batch', 'web'], default='batch')
     segment_parser.add_argument('-l', '-model', type=argparse.FileType('r'), help="Segmenter model to use")
     segment_parser.add_argument('--std-model', type=argparse.FileType('r'), help="Standardizer model to use")
 

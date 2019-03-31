@@ -38,8 +38,11 @@ def sepDigits(someString):
     return " ".join(re.split('(\d+)', someString))
 
 
-def sepPunc(someString):
-    punc = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~؛،؟؛.»«”'
+def sepPunc(someString, contains_plus=False):
+    if contains_plus:
+        punc = '!"#$%&\'()*,-./:;<=>?@[\\]^_`{|}~؛،؟؛.»«”' # Removed '+'
+    else:
+        punc = '!"#$%&+\'()*,-./:;<=>?@[\\]^_`{|}~؛،؟؛.»«”'
     out = []
     for char in someString:
         if char in punc:
@@ -49,8 +52,8 @@ def sepPunc(someString):
     return ''.join(out)
 
 
-def clean_arabic(someString):
-    return sepPunc(sepDigits(removeTashkil(someString)))
+def clean_arabic(someString, contains_plus=False):
+    return sepPunc(sepDigits(removeTashkil(someString)), contains_plus=contains_plus)
 
 
 # main
