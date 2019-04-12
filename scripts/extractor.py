@@ -11,7 +11,6 @@ from pprint import pprint
 class FeatureExtractor(ABC):
 
     def __init__(self, template):
-        print(template)
         self.template = feature_templates[template]
 
     @abstractmethod
@@ -94,6 +93,9 @@ class LabelExtractor():
     def word_to_labels(self, word):
         return list(map(self.char_to_label, word))
 
+    def labels_to_word(self, word, labels):
+        pass
+
     def sent_to_labels(self, sent):
         if type(sent) == 'str':
             sent = sent.split()
@@ -122,11 +124,22 @@ class SegmenterLE(LabelExtractor):
                 labels[curr_ind] = 1
             return labels
 
+    def labels_to_word(self, word, labels):
+        segmented_word = ""
+        if self.style == 'binary_plus':
+            for i in range(len(word)):
+                segmented_word += word[i]
+                if labels[i] and i < len(word)-1:
+                    segmented_word += '+'
+            return segmented_word
+
 
 class StandardizerLE(LabelExtractor):
 
     def __init__(self, style='eight_class'):
         super().__init__(style)
+        self.alif_ha = set(('ا', 'ه'))
+        self.alif_maksura = 'ى'
 
     def char_to_label(self, char):
         if self.style == 'eight_class':
@@ -140,6 +153,28 @@ class StandardizerLE(LabelExtractor):
                 'ي': 6,
                 'ى': 7
             }[char]
+
+    def label_to_char(self, label):
+        if self.style == 'eight_class':
+            return {
+                0: 'ا',
+                1: 'أ',
+                2: 'إ',
+                3: 'آ',
+                4: 'ة',
+                5: 'ه',
+                6: 'ي',
+                7: 'ى'
+            }[label]
+
+    def should_standardize(self, char_no, word_no, sentence):
+        word = sentence[word_no]
+        char = word[char_no]
+        if char in self.alif_ha or (char == 'ى' and char_no == len(word) - 1):
+            return True
+        else:
+            return False
+
 
 if __name__ == "__main__":
     fe = OldFeatureExtractor('t1')

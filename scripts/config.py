@@ -10,13 +10,12 @@ feature_templates = {
 }
 
 categorical_indices = {
-    't1': []
-
+    't1': 'all'
 }
 
 catboost_config = {
     'default': {
-        'iterations': 350,
+        'iterations': 200,
         'thread_count': 4,
         'early_stopping_rounds': 10,
         'logging_level': 'Verbose'
@@ -25,7 +24,7 @@ catboost_config = {
 
 lightgbm_config = {
     'default': {
-        'num_iterations': 350,
+        'num_iterations': 50,
         'num_threads': 4,
         'early_stopping_rounds': 10,
         'train_metric': True
