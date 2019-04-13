@@ -7,7 +7,7 @@ Created on March 28 2:19pm 2019
 """
 
 import mmap
-from scripts.preprocessor import clean_arabic
+import re
 
 def get_num_lines(file_path):
     fp = open(file_path, "r+")
@@ -16,6 +16,44 @@ def get_num_lines(file_path):
     while buf.readline():
         lines += 1
     return lines
+
+
+
+damma = "ُ"
+sukun = "ْ"
+fatha = "َ"
+kasra = "ِ"
+shadda = "ّ"
+tanweendam = "ٌ"
+tanweenfath = "ً"
+tanweenkasr = "ٍ"
+tatweel = "ـ"
+tashkil = (damma, sukun, fatha, kasra, shadda, tanweendam, tanweenfath, tanweenkasr, tatweel)
+
+def removeTashkil(word):
+    w = [letter for letter in word if letter not in tashkil]
+    return "".join(w)
+
+def sepDigits(someString):
+    return " ".join(re.split('(\d+)', someString))
+
+def sepPunc(someString, contains_plus=False):
+    if contains_plus:
+        punc = '!"#$%&\'()*,-./:;<=>?@[\\]^_`{|}~؛،؟؛.»«”' # Removed '+'
+    else:
+        punc = '!"#$%&+\'()*,-./:;<=>?@[\\]^_`{|}~؛،؟؛.»«”'
+    out = []
+    for char in someString:
+        if char in punc:
+            out.append(' ' + char + ' ')
+        else:
+            out.append(char)
+    return ''.join(out)
+
+
+def clean_arabic(someString, contains_plus=False):
+    return sepPunc(sepDigits(removeTashkil(someString)), contains_plus=contains_plus)
+
 
 substandard_dict = {
     'أ': 'ا',
@@ -40,3 +78,4 @@ def substandardize_line(line):
     for word in line:
         sso_line.append(substandardize_word(word))
     return ' '.join(sso_line)
+
