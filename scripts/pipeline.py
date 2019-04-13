@@ -1,6 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
-from scripts.preprocessor import clean_arabic
+from scripts.util import clean_arabic
 from scripts.extractor import OldFeatureExtractor, StandardizerLE, SegmenterLE
 from scripts.util import substandardize_line
 
@@ -81,6 +81,7 @@ class Standardizer(Actor):
             return line[word_no][char_no]
 
     def act_on_line(self, line):
+        line = line.strip()
         substandard_line = substandardize_line(line)
         assert len(line) == len(substandard_line)
         substandard_line = substandard_line.split()

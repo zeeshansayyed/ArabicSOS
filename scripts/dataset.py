@@ -3,8 +3,7 @@ from abc import ABC, abstractmethod
 from tqdm import tqdm
 
 from scripts.extractor import OldFeatureExtractor, SegmenterLE, StandardizerLE
-from scripts.preprocessor import clean_arabic
-from scripts.util import get_num_lines
+from scripts.util import get_num_lines, clean_arabic
 
 
 

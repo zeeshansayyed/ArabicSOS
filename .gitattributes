@@ -1,0 +1,13 @@
+# These files are text and should be normalized (convert crlf =&gt; lf)
+*.txt text
+*.text text
+*.py text
+*.std text
+*.sso text
+
+# Images should be treated as binary
+# (binary is a macro for -text -diff)
+*.png     binary
+*.jepg    binary
+*.mod binary
+*.model binary

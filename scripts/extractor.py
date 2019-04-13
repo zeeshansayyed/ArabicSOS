@@ -1,12 +1,9 @@
 from abc import ABC, abstractmethod
 import csv
-from scripts.preprocessor import clean_arabic
+from scripts.util import clean_arabic
 from scripts.feature_extractor import char_to_features as c2f
 from scripts.config import feature_templates
 import itertools
-from pprint import pprint
-# import pudb;
-# pu.db
 
 class FeatureExtractor(ABC):
 

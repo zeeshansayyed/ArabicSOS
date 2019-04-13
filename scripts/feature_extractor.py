@@ -6,7 +6,7 @@ Created on Wed Dec 19 10:59:23 2018
 @author: Zeeshan Ali Sayyed
 """
 
-from scripts.preprocessor import clean_arabic
+from scripts.util import clean_arabic
 import csv
 import pandas as pd
 
@@ -94,6 +94,7 @@ def char_to_features(char_pos, word_pos, sentence, feature_codes):
     char_features = []
     for fcode in feature_codes:
         char_features.append(_process_feature_code(char_pos, word_pos, sentence, fcode))
+    # print(char_features)
     return char_features
 
 
@@ -124,8 +125,7 @@ def sent_to_features(sentence, feature_codes):
 
 def file_to_features(filepath, feature_codes):
     """
-    TODO: Line, word and character numbering starts from 1 in order to consistent with existing
-    trained models. Change them to start from 0 in future models and remove this Warning!
+    TODO: Line, word and character numbering starts from 1 in order to consistent with existing trained models. Change them to start from 0 in future models and remove this Warning!
     """
     infile = open(filepath)
     file_features = []
