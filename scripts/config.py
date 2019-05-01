@@ -15,8 +15,8 @@ categorical_indices = {
 
 catboost_config = {
     'default': {
-        'iterations': 200,
-        'thread_count': 4,
+        'iterations': 300,
+        'thread_count': 10,
         'early_stopping_rounds': 10,
         'logging_level': 'Verbose'
     }
@@ -24,8 +24,8 @@ catboost_config = {
 
 lightgbm_config = {
     'default': {
-        'num_iterations': 50,
-        'num_threads': 4,
+        'num_iterations': 400,
+        'num_threads': 10,
         'early_stopping_rounds': 10,
         'train_metric': True
     }

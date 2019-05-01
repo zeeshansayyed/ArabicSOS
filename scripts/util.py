@@ -48,7 +48,7 @@ def sepPunc(someString, contains_plus=False):
             out.append(' ' + char + ' ')
         else:
             out.append(char)
-    return ''.join(out)
+    return ' '.join((''.join(out)).split())
 
 
 def clean_arabic(someString, contains_plus=False):
