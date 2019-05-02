@@ -9,8 +9,10 @@ Created on Wed Dec 19 10:59:23 2018
 from scripts.util import clean_arabic
 import csv
 import pandas as pd
+from scripts.config import *
+# from numba import jit
 
-
+#@jit
 def _get_single_char(word, curr_pos, direction, distance, fill_char='*'):
     if direction == 'left':
         target_pos = curr_pos - distance
@@ -22,7 +24,7 @@ def _get_single_char(word, curr_pos, direction, distance, fill_char='*'):
     else:
         return word[target_pos]
 
-
+#@jit
 def _get_multiple_chars(fcode, word, curr_pos):
     if fcode.startswith('next'):
         n_chars = int(fcode.replace('next', '').replace('letters', ''))
@@ -43,26 +45,26 @@ def _get_multiple_chars(fcode, word, curr_pos):
     else:
         return feature[::-1]
 
-
-def _get_affix(fcode, word_pos, sentence, prefix_length=3):
+#@jit
+def _get_affix(fcode, word_pos, sentence, affix_length=3):
     fcode = fcode.split('_')
-    if fcode[0] == 'prev':
-        word_pos -= 1
-    elif fcode[0] == 'following':
-        word_pos += 1
+    if fcode[0].startswith('prev'):
+        word_pos -= int(fcode[0][4:])
+    elif fcode[0].startswith('following'):
+        word_pos += int(fcode[0][9:])
     if word_pos < 0 or word_pos >= len(sentence):
         return '#'
 
     word = sentence[word_pos]
 
     if fcode[2] == 'prefix':
-        return word[:prefix_length]
+        return word[:affix_length]
     elif fcode[2] == 'suffix':
-        return word[-prefix_length:]
+        return word[-affix_length:]
     else:
         raise Exception("Unsupported feature code: {}".format(fcode))
 
-
+#@jit
 def _process_feature_code(char_pos, word_pos, sentence, fcode):
     # print(fcode)
     if fcode.startswith('minus'):
@@ -89,7 +91,7 @@ def _process_feature_code(char_pos, word_pos, sentence, fcode):
     else:
         raise Exception("Unsupported feature code: {}".format(fcode))
 
-
+#@jit
 def char_to_features(char_pos, word_pos, sentence, feature_codes):
     char_features = []
     for fcode in feature_codes:
@@ -195,12 +197,14 @@ def extract_features(filepath, feature_codes, write_style='csv', out_file_path=N
 
 if __name__ == "__main__":
     print("Feature Extractor called as independent script")
-    feature_codes = ['minus5', 'minus4', 'minus3', 'minus2', 'minus1', 'focus',
-                     'plus1', 'plus2', 'plus3', 'plus4', 'plus5', 'next2letters',
-                     'prev2letters', 'prev_word_suffix', 'following_word_prefix',
-                     'focus_word_prefix', 'focus_word_suffix']
-    sentence = "الكاتب: محمد رشيد رضا"
-    # f = sent_to_features(sentence, feature_codes)
+    feature_codes = ['following3_word_suffix']
+    # feature_codes = ['focus', 'next4letters', 'prev2letters', 'prev_word_suffix', 'following1_word_prefix',
+    #                  'focus_word_prefix', 'focus_word_suffix']
+    # 'next4letters', 'prev2letters', 'prev_word_suffix', 'following_word_prefix',
+    #                      'focus_word_prefix', 'focus_word_suffix'
+    sentence = "Hi Zeeshan Ali Sayyed! What are you doing? Are you good?"
+    sentence = clean_arabic(sentence)
+    f = sent_to_features(sentence, feature_templates['t2'])
     # print(len(f), len(f[0]), len(f[0][0]))
-    f = extract_features('../data/playground/TestFile', feature_codes, return_style='dataframe')
-    print(f)
+    # f = extract_features('../data/playground/TestFile', feature_codes, return_style='dataframe')
+    print(len(f), len(f[0][0]))
