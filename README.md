@@ -3,6 +3,8 @@ Segmenter and Orthography Standardazier (SOS) for Classical Arabic (CA)
 
 This is the beta version of the Arabic Segmenter for segmenting classical Arabic texts. It has currently been trained on a subset of Al-Manar corpus created by Dr. Emad Mohamed.
 
+Related Paper: ![Arabic-SOS: Segmentation, Stemming, and Orthography Standardization for Classical and pre-Modern Standard Arabic](https://dl.acm.org/doi/abs/10.1145/3322905.3322927)
+
 **Disclaimer**:
 This package is still in the early development stages, hence the documentation is sparse. While it has been tested in standard use-cases, there might be a few bugs in the code. Please make sure you have a backup of your data before you use the package. We will greatly appreciate any feedback at the email addresses listed in the controbutors section.
 
